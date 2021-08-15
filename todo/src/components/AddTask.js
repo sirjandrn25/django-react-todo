@@ -1,19 +1,30 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Grid, TextField, Button } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector,useDispatch } from "react-redux";
+import { addItem } from '../react-redux/todo/asyncActions';
 const useStyles = makeStyles((theme) => ({
   textField: {
     marginBottom: "10px"
+  },
+  btn:{
+    marginRight:20
   }
 }));
 
 const AddTask = () => {
   const classes = useStyles();
-  
+  const dispatch = useDispatch();
+  const tasks = useSelector(state=>state);
+
   const handleSubmit = e=>{
     e.preventDefault();
-    const title = e.target.title.value;
-    const time = e.target.time.value;
+    
+    const data = {
+      title:e.target.title.value,
+      time:e.target.time.value
+    }
+    dispatch(addItem(data));
     
 
   }
@@ -55,9 +66,10 @@ const AddTask = () => {
             step: 300, // 5 min
           }}
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button className={classes.btn} type="submit" variant="contained" color="primary">
           Add
         </Button>
+        {tasks.loading&&tasks.items?<span>{"sending......"}</span>:null}
         </form>
       </div>
 

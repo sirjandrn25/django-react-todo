@@ -13,7 +13,7 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector,useDispatch } from "react-redux";
-import { fetchItems } from "../react-redux/todo/asyncActions";
+import { fetchItems,deleteItem } from "../react-redux/todo/asyncActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,17 +29,18 @@ const ItemList = (params) => {
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    dispatch(fetchItems());
+    (tasks.items.length=== 0) && dispatch(fetchItems());
     setItem(tasks.items);
     
     console.log("useEffect");
   
-  },[dispatch]);
+  },[dispatch,tasks.items]);
   
   const convertLocalTimeString = time=>{
     const time_list = time.split(':');
     const localTime = parseInt(time_list[0])>=12?time+' PM':time+'AM';
     return localTime;
+    
   }
 
   const get_itemList = (item, index) => {
@@ -48,7 +49,7 @@ const ItemList = (params) => {
       <ListItem key={index} button>
         <ListItemText primary={item.complete?<del>{item.title}</del>:item.title} secondary={convertLocalTimeString(item.time)} />
         <ListItemSecondaryAction>
-          <IconButton onClick={e=>params.handleDelete(item.id)}>
+          <IconButton onClick={e=>dispatch(deleteItem(item.id))}>
             <DeleteIcon />
           </IconButton>
           <IconButton onClick = {e=>params.handleEdit(item)}>
@@ -59,17 +60,18 @@ const ItemList = (params) => {
     )
   }
 
-  const handleDelete = item_id=>{
-    
+  const getItemList = ()=>{
+    return(
+      <List className={classes.root}>
+      {items.map((item, index) => {
+        return get_itemList(item, index)
+      })}
+    </List>
+    )
   }
   return (
     <>
-        
-          <List className={classes.root}>
-            {items.map((item, index) => {
-              return get_itemList(item, index)
-            })}
-          </List>
+      {tasks.loading && tasks.items.length===0?"loading......":getItemList()}
        
     </>
   );

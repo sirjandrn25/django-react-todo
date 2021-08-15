@@ -3,7 +3,8 @@ import { TextField, Button, Checkbox, FormControlLabel, Grid } from "@material-u
 
 import { makeStyles } from "@material-ui/core/styles";
 import { DataUsageOutlined } from '@material-ui/icons';
-
+import { useSelector,useDispatch } from "react-redux";
+import { updateItem } from '../react-redux/todo/asyncActions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,15 +22,24 @@ const useStyles = makeStyles((theme) => ({
 const EditTask = (params) => {
     const classes = useStyles();
     const [checked, setChecked] = useState(true);
+
     useEffect(() => {
         setChecked(params.task.complete);
 
     }, [params.task.id])
+    const dispatch = useDispatch();
+    const tasks = useSelector(state=>state);
     const handleSubmit = e=>{
         e.preventDefault();
-        const task = e.target.task.value;
-        const time = e.target.time.value;
-        const complete = e.target.complete.checked;
+        
+        const data = {
+            title:e.target.title.value,
+            time:e.target.time.value,
+            complete:e.target.complete.checked
+        }
+        console.log(data)
+        dispatch(updateItem(data,params.task.id));
+
       }
     
     return (
@@ -43,7 +53,7 @@ const EditTask = (params) => {
                         fullWidth
                         placeholder="enter task"
                         className={classes.textField}
-                        name="task"
+                        name="title"
                         defaultValue={params.task.title}
                     />
                     <Grid container spacing={2}>
@@ -85,9 +95,10 @@ const EditTask = (params) => {
                     <Button className={classes.btn} type="submit" variant="contained" color="primary">
                         Update
                     </Button>
-                    <Button type="submit" onClick={e=>params.closeEdit()} variant="contained" color="secondary">
+                    <Button className={classes.btn} onClick={e=>params.closeEdit()} variant="contained" color="secondary">
                         Cancel
                     </Button>
+                    <span>{tasks.loading?"sending ....":null}</span>
                 </form>
             </div>
         </>

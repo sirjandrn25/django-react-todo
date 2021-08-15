@@ -69,7 +69,7 @@ export const deleteItem = item_id=>{
 	
 		const config = {
 			method:'delete',
-			url:`${url}/${item_id}/`,
+			url:`${url}${item_id}/`,
 			headers: {
 				'x-CSRFToken': csrf
 			}
@@ -83,7 +83,7 @@ export const deleteItem = item_id=>{
 	}
 }
 
-export const updateItem = item=>{
+export const updateItem = (data,id)=>{
 	const csrf = getCsrfToken();
 	return dispatch=>{
 		dispatch(All.fetchTaskRequest());
@@ -91,11 +91,11 @@ export const updateItem = item=>{
 
 		const config = {
 			method:'put',
-			url:`${url}/${item.id}/`,
+			url:`${url}${id}/`,
 			headers: {
 				'x-CSRFToken': csrf
 			},
-			data:item
+			data:data
 
 		}
 		axios(config).then(response=>{
