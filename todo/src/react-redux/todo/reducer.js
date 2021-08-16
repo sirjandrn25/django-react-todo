@@ -4,6 +4,7 @@ import * as All from './TodoTypes';
 const initialState = {
 	loading:false,
 	items:[],
+	item_detail:{},
 	error:{}
 }
 
@@ -20,7 +21,8 @@ const todoReducer = (state=initialState,action)=>{
 		case All.FETCH_TASK_SUCCESS:
 			return {
 				loading:false,
-				items:action.payload,
+				items:action.payload.data,
+				item_detail:action.payload.detail,
 				error:{}
 			}
 		case All.FETCH_TASK_FAILURE:

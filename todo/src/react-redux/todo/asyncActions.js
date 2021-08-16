@@ -11,15 +11,27 @@ const getCsrfToken = ()=>{
 }
 
 
-export const fetchItems = ()=>{
-	const csrf = getCsrfToken();
+export const fetchItems = (filter_data={})=>{
+	
 	return dispatch=>{
+		// console.log(filter_data);
 		dispatch(All.fetchTaskRequest());
-		
-		axios(url).then(response=>{
+		let own_url = `${url}?`;
+		for(let key of Object.keys(filter_data)){
+			if(filter_data[key] !== ''){
+				own_url +=`${key}=${filter_data[key]}&`;
+			}
+			
+		}
+		axios(own_url).then(response=>{
 			const data = response.data;
-		
-			dispatch(All.fetchTaskSuccess(data));
+			const items = data.results
+			const detail = {
+				count:data.count,
+				next:data.next,
+				previous:data.previous
+			}
+			dispatch(All.fetchTaskSuccess({data:items,detail:detail}));
 
 			}).catch(error=>{
 			const status = error.response.status;

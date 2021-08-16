@@ -12,6 +12,9 @@ class Task(models.Model):
 
     def __str__(self):
         return self.time
+    
+    class Meta:
+        ordering = ['-id']
 
 
 class TaskSerializer(serializers.ModelSerializer):
